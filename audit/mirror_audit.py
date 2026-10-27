@@ -1,4 +1,4 @@
-"""Direction-mirror audit of the improved CIC-IDS2017 labels.
+"""Direction-mirror audit of the improved CIC-IDS2017 and CSE-CIC-IDS2018 labels.
 
 For every `label_flows(...)` rule in the official labelling notebook (DistriNet CNS2022_Code), swap the
 source and destination IP lists and count BENIGN flows that match the swapped rule inside the same time
@@ -76,5 +76,5 @@ if __name__ == '__main__':
     res = res.drop_duplicates(subset=['day', 'label', 'src', 'dst', 'fwd_flows', 'rev_flows'])
     pd.set_option('display.width', 250)
     print(res.to_string(index=False))
-    pass
+
     res.to_csv(HERE / f'mirror_audit_{year}.csv', index=False)

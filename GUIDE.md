@@ -104,7 +104,7 @@ captured packets ──► flows + 47 features ──► 6 classifiers + 1 autoe
 
 These are the shipped run (seed 0). Retrained with 5 seeds: Perceptron 66 (range 40–80), MLP 95.5 (93–98), LightGBM 98.4 (97–99). LightGBM stays ahead in every run.
 
-About the false alarms: 79 of the shipped LightGBM's 89 false alarms are scan probes the dataset mislabels as benign (README, Label audit). On corrected labels it has 10 (0.0035%). Across 5 seeds the official-label count ranges from 10 to 89, depending on whether a seed flags these flows; on corrected labels every seed gives 7–10. LightGBM still has fewer false alarms than the MLP either way (10 vs 60).
+About the false alarms: 75–79 of the shipped LightGBM's 89 false alarms are scan probes the dataset likely mislabels as benign (README, Label audit). On corrected labels it has 10–14. Across 5 seeds the official-label count ranges from 10 to 89, depending on whether a seed flags these flows; on corrected labels every seed gives 7–10. LightGBM still has fewer false alarms than the MLP either way (10 vs 60).
 
 Simple linear models catch most attacks but raise many false alarms and mix up families. Non-linear models (SVM, MLP, LightGBM) do much better. Click a model row to see its per-class scores and confusion matrix.
 

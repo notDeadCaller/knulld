@@ -108,12 +108,14 @@ Reproduce with `python audit/mirror_audit.py <official 2017 labelling notebook>`
 - **CIC-IDS2017 (improved release).** Swapping source and destination in the five official scan-labelling rules
   (Thursday Infiltration–Portscan rounds 1–3, Friday Portscan rounds 1–2) finds 2,228 BENIGN zero-payload flows,
   victim → scanner, inside the scan windows, all carrying the mirrored nmap window signature (Fwd Init Win 0,
-  Bwd Init Win 1024 or 29200). None duplicates a labelled probe, and the same host pairs have no such flows outside
-  the windows. They look like scan probes whose flow direction was flipped. This is inferred from flow features, not
+  Bwd Init Win 1024 or 29200). None duplicates a labelled probe, and the same host pairs have no flows with this
+  signature outside the windows. They look like scan probes whose flow direction was flipped. This is inferred from flow features, not
   from packet captures, and it is a lower bound (the labelling code drops rows with infinite rates). It is a residual
   instance of a known problem: Engelen et al. 2021 describe the direction risk, Lanvin et al. 2022 report this
-  Thursday scan, and [CNS2022_Code PR #3](https://github.com/GintsEngelen/CNS2022_Code/pull/3) proposes labelling both
-  directions. 79 of the shipped LightGBM's 89 test false alarms are these flows (0.031% → 0.0035% on corrected labels).
+  Thursday scan, and [CNS2022_Code PR #3](https://github.com/GintsEngelen/CNS2022_Code/pull/3) proposes labelling every
+  rule in both directions (Friday included); it is not merged and the distributed release predates it. 75 of the shipped
+  LightGBM's 89 test false alarms are these flows (79 counting all 2,471 zero-payload reverse flows in the windows);
+  0.031% → 0.0035% when those 2,471 are relabelled. The effect is seed-dependent (see Limitations).
 - **CSE-CIC-IDS2018 (our three days).** No such reverse flows. But 27% of the benign rows in our 5% sample (191,969)
   are inbound TCP 3389 (132,038) or 445 (59,931) from ~19k public IPs to internal hosts; the labelling code has no rule
   for these ports, so they are BENIGN by default. 86% carry payload and their intent is not established, so this is a
