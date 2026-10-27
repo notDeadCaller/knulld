@@ -102,6 +102,8 @@ captured packets ──► flows + 47 features ──► 6 classifiers + 1 autoe
 | MLP | 97 | 0.05% | 99.4% |
 | LightGBM | **98** | **0.03%** | 98.9% |
 
+These are the shipped run (seed 0). Retrained with 5 seeds: Perceptron 66 (range 40–80), MLP 95.5 (93–98), LightGBM 98.4 (97–99). LightGBM stays ahead in every run.
+
 Simple linear models catch most attacks but raise many false alarms and mix up families. Non-linear models (SVM, MLP, LightGBM) do much better. Click a model row to see its per-class scores and confusion matrix.
 
 **Data and models**: class counts for train / validation / test, and one line on what each model is.
@@ -139,7 +141,7 @@ The most accurate model is not the toughest one. Slowed down 8×, LightGBM catch
 
 ![Cross-dataset](docs/img/bench-cross.png)
 
-Every model breaks. LightGBM catches only 1.7% of attacks on the new network. The perceptron catches 99% but flags 48% of normal traffic, so it is not really working either. This is the biggest open problem in this field, and the honest headline of the project.
+Every model breaks on at least part of the new network. The shipped LightGBM catches only 1.7% of attacks because it misses all DDoS. That part is seed luck: retrained with four other seeds it catches ~99% of DDoS, about 71% of attacks overall. What fails in every run is DoS (~23% caught) and brute force (0%). The perceptron catches 99% but flags 48% of normal traffic, so it is not really working either. This is the biggest open problem in this field, and the honest headline of the project.
 
 **Honest evaluation**: the checks we did before trusting any number.
 

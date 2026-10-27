@@ -339,7 +339,8 @@ function benchSkeleton() {
           <div class="xl">benign falsely flagged</div><div class="hbar"><div style="width:${c.false_alarm_rate * 100}%"></div><span>${pct(c.false_alarm_rate, 0)}</span></div></div>`;
       }).join('')}</div>
       <div class="pad note">Every model trained on the 2017 network breaks on the 2018 one. The simple models keep a higher F1 only by alarming on huge
-      shares of benign traffic; LightGBM stays quiet on benign traffic and misses almost every attack. Read F1 together with the two bars.
+      shares of benign traffic; this LightGBM stays quiet on benign traffic and misses almost every attack. Retrained with other seeds it catches ~99% of
+      DDoS, but DoS (~23%) and brute force (0%) fail in every run. Read F1 together with the two bars.
       2018 F1 averages the 4 classes present there (benign, DoS, DDoS, brute force). Cross-network generalisation is an open problem: Cantone et al. (IEEE Access 2024)
       measured the same collapse on this dataset pair.</div>`) : '') +
     panel('s12 end', 'Honest evaluation', 'what we checked before trusting any number',

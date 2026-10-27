@@ -5,8 +5,10 @@ families, flags traffic unlike anything seen in training, explains each verdict,
 tests how the models hold up on a new network and against an attacker who adapts.
 
 It is a learning and benchmarking tool, not a production IDS. The headline result is the
-honest one: LightGBM scores 98 macro-F1 on held-out CIC-IDS2017 traffic, then catches about
-2% of attacks on a different network (CSE-CIC-IDS2018). The console lets you see why.
+honest one: LightGBM scores 98 macro-F1 on held-out CIC-IDS2017 traffic. On a different network
+(CSE-CIC-IDS2018) it misses most DoS and all brute-force attacks in every training run we tried, and
+whether it catches DDoS there depends on the random seed: 0% for the shipped model, ~99% for four
+retrained seeds. The console lets you see why.
 
 ![KNULLD console: live flow bitmap, verdict log and model votes](docs/img/tap.png)
 
@@ -76,14 +78,17 @@ trained on benign traffic only for novelty detection.
 
 - `flows.py` follows CICFlowMeter's rules but could not be compared byte-for-byte against it:
   the raw CIC-IDS2017 pcaps sit behind a registration form. Its self-check uses hand-computed values.
-- Models trained on one network fail on another (2017 → 2018: LightGBM catches ~2% of attacks), and the autoencoder does not
+- Models trained on one network fail on another (2017 → 2018, LightGBM over 5 seeds: ~23% of DoS and 0% of brute force
+  caught; the shipped model also misses all DDoS, which other seeds catch), and the autoencoder does not
   reliably flag foreign traffic either. Treat labels on your own pcaps as indicative only.
 - Classification is per flow: a lone SYN looks the same in a port scan and in a SYN flood.
 - Very rare classes (WebAttack: 104 flows after relabelling) give noisy per-class numbers.
 - Evasion is a feature-level what-if (timing stretched, payload padded up to 1460 B, dependent features recomputed),
   not replayed packets; stretching also stretches the server's reply times, which an attacker would not fully control.
-- One training run (`SEED = 0`). The MLP's validation F1 swings between 0.87 and 0.98 across late epochs, so
-  "MLP 97 vs LightGBM 98" is within run-to-run noise; repeat with several seeds before ranking them.
+- The shipped artifacts are one training run (`SEED = 0` in `train.py`). Retraining with seeds 0–4 on the same split:
+  LightGBM 2017 macro-F1 98.4 (range 97.1–99.3), MLP 95.5 (92.7–97.7), LightGBM ahead in 5/5 runs;
+  Perceptron 66 (40–80), so the shipped 40 is its worst run. On 2018, LightGBM catches 57% of attacks on
+  average (1.7–71%); the shipped model is the 1.7% outlier. Evasion at 8× slow-down is stable (73–74% caught).
 - The temporal split cuts inside each (day, label) run, so train and test can share an attack session.
   A per-session or per-day split would be stricter.
 - Base rates: the 2017 test set is 16% attacks and the 2018 benign traffic is subsampled to 5%, both far more
