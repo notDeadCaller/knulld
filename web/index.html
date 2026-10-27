@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KNULLD — flow attack classifier</title>
+<link rel="preload" href="fonts/doto.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/martian-mono.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 8 8%22%3E%3Cpath d=%22M0 0h8v8H0z%22/%3E%3Cpath fill=%22%23FF2A00%22 d=%22M2 2h4v4H2z%22/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="title">KNULL<span>/</span>D</div>
+    <nav>
+      <a href="#tap" data-nav="tap">01 TAP</a>
+      <a href="#dissect" data-nav="dissect">02 DISSECT</a>
+      <a href="#bench" data-nav="bench">03 BENCH</a>
+      <a href="#zeroday" data-nav="zeroday">04 ZERO-DAY</a>
+      <a href="#pcap" data-nav="pcap">05 PCAP</a>
+    </nav>
+    <div class="ctr">
+      <div><small>FLOWS</small><b id="nflows">0</b></div>
+      <div class="red"><small>ALERTS</small><b id="nalerts">0</b></div>
+      <div><small>NOVEL</small><b id="nnovel">0</b></div>
+    </div>
+  </header>
+
+  <!-- 01 TAP ------------------------------------------------------------ -->
+  <section data-screen="tap">
+    <div class="tap">
+      <div>
+        <div class="bar"><span>Replay · synthetic mix of held-out test flows</span><span id="scen-desc"></span></div>
+        <div class="scen" id="scen"></div>
+        <div class="ctl">
+          <button id="play">PAUSE</button>
+          <button data-speed="1" class="on">1×</button><button data-speed="4">4×</button><button data-speed="16">16×</button>
+          <div class="progress"><div id="prog"></div></div>
+          <span id="pos" class="num">0 / 0</span>
+        </div>
+        <div class="bitmap">
+          <div class="colnums" id="cols"></div>
+          <canvas class="bm" id="bm" role="img" aria-label="flow bitmap: one row per flow, 47 feature columns, prediction and truth lanes"></canvas>
+        </div>
+        <div class="key">
+          <span><span class="chip c-d1"></span>low</span><span><span class="chip c-d2"></span>mid</span><span><span class="chip c-k"></span>high</span>
+          <span>lanes: <b>P</b> prediction · <b>T</b> truth</span>
+          <span><span class="chip c-r"></span>attack</span><span><span class="chip c-chk"></span>novel (autoencoder)</span>
+          <span style="margin-left:auto">hover = read value · click = inspect</span>
+        </div>
+      </div>
+      <aside class="side">
+        <div><div class="bar"><span>Verdicts</span><span>struck = wrong</span></div><pre id="log"></pre></div>
+        <div class="pad note">Each row is one network <b>flow</b> (a conversation between two endpoints), described by 47 numbers
+          from its packets: sizes, timing gaps, TCP flags. Darker = higher value. Attacks leave visible textures.</div>
+      </aside>
+    </div>
+    <div class="lower">
+      <div><div class="bar"><span>Model votes</span><button id="to-dissect">dissect →</button></div><div class="cells" id="votes"></div><div class="cons" id="cons"></div></div>
+      <div><div class="bar"><span>Why · LightGBM SHAP</span><span id="attr-h"></span></div><div class="attr" id="attr"></div></div>
+      <div><div class="bar"><span>Novelty · autoencoder</span><span>alarm ≥ 1</span></div><div class="pad" id="nov"></div></div>
+      <div><div class="bar"><span>This replay so far</span><span>LightGBM vs truth</span></div><div class="tally" id="tally"></div></div>
+    </div>
+  </section>
+
+  <!-- 02 DISSECT -------------------------------------------------------- -->
+  <section data-screen="dissect">
+    <div class="bar"><span>Dissect one flow</span><span><button id="prev-atk">← prev attack</button> <button id="next-atk">next attack →</button></span></div>
+    <div class="dis-head" id="dhead"></div>
+    <div class="dis">
+      <div class="rule-r">
+        <div class="bar"><span>47 features</span><span><button id="sort-imp" class="on">sort: impact</button> <button id="sort-orig">sort: original</button></span></div>
+        <div class="ftab"><table><thead><tr><th>FEATURE</th><th class="num">RAW</th><th>SCALED 0–1</th><th id="shap-h">SHAP</th><th class="num"></th></tr></thead><tbody id="ftab"></tbody></table></div>
+      </div>
+      <div>
+        <div class="bar"><span>Evasion lab</span><span>feature-level what-if</span></div>
+        <div class="lab">
+          <div class="note">What if this flow were <b>slower</b> (every gap and the duration × k) or its sent packets <b>padded</b> with extra bytes
+            (capped at 1460 B per packet)? Dependent features are recomputed, then every model votes again. An approximation: a real attacker
+            controls their own sending, not the server's reply times.</div>
+          <div class="slider"><b>DELAY</b><input type="range" id="delay" min="0" max="5" step="1" value="0"><span id="delay-v" class="num">×1</span></div>
+          <div class="slider"><b>PAD</b><input type="range" id="padb" min="0" max="1024" step="64" value="0"><span id="pad-v" class="num">+0 B</span></div>
+          <div class="verdict" id="evres"></div>
+          <table class="cmp"><thead><tr><th>MODEL</th><th>ORIGINAL</th><th>PERTURBED</th></tr></thead><tbody id="cmp"></tbody></table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 BENCH ---------------------------------------------------------- -->
+  <section data-screen="bench">
+    <div class="bench" id="bench"><div class="s12 end loading">LOADING…</div></div>
+  </section>
+
+  <!-- 04 ZERO-DAY ------------------------------------------------------- -->
+  <section data-screen="zeroday">
+    <div class="zd" id="zd"></div>
+  </section>
+
+  <!-- 05 PCAP ----------------------------------------------------------- -->
+  <section data-screen="pcap">
+    <div class="bar"><span>Classify your own capture</span><span>pcap / pcapng ≤ 50 MB · flows rebuilt locally with flows.py</span></div>
+    <label class="drop" id="drop">
+      <span class="dot">DROP A PCAP</span>
+      <span>or click to choose a file. Nothing leaves this machine.</span>
+      <input type="file" id="file" class="sr" accept=".pcap,.pcapng,.cap">
+    </label>
+    <div class="warn" id="pcap-caveat"></div>
+    <div class="samples pad" id="samples"></div>
+    <div id="pres"></div>
+  </section>
+
+  <footer><span>data: CIC-IDS2017 / CSE-CIC-IDS2018, improved release (Engelen et al., 2022)</span><span id="foot-meta"></span></footer>
+</div>
+<div class="tip" id="tip"></div>
+<script src="app.js"></script>
+</body>
+</html>

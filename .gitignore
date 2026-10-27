@@ -1,0 +1,13 @@
+.venv/
+data/
+__pycache__/
+*.pyc
+dist/
+# local only: presentation, course material, design drafts, packaging, editor settings
+deck/
+*.pdf
+*.pptx
+mockups/
+make_zip.py
+.claude/
+notes/
