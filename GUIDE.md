@@ -104,6 +104,8 @@ captured packets ──► flows + 47 features ──► 6 classifiers + 1 autoe
 
 These are the shipped run (seed 0). Retrained with 5 seeds: Perceptron 66 (range 40–80), MLP 95.5 (93–98), LightGBM 98.4 (97–99). LightGBM stays ahead in every run.
 
+About the false alarms: 79 of the shipped LightGBM's 89 false alarms are scan probes the dataset mislabels as benign (README, Label audit). On corrected labels it has 10 (0.0035%). Across 5 seeds the official-label count ranges from 10 to 89, depending on whether a seed flags these flows; on corrected labels every seed gives 7–10. LightGBM still has fewer false alarms than the MLP either way (10 vs 60).
+
 Simple linear models catch most attacks but raise many false alarms and mix up families. Non-linear models (SVM, MLP, LightGBM) do much better. Click a model row to see its per-class scores and confusion matrix.
 
 **Data and models**: class counts for train / validation / test, and one line on what each model is.
@@ -141,7 +143,7 @@ The most accurate model is not the toughest one. Slowed down 8×, LightGBM catch
 
 ![Cross-dataset](docs/img/bench-cross.png)
 
-Every model breaks on at least part of the new network. The shipped LightGBM catches only 1.7% of attacks because it misses all DDoS. That part is seed luck: retrained with four other seeds it catches ~99% of DDoS, about 71% of attacks overall. What fails in every run is DoS (~23% caught) and brute force (0%). The perceptron catches 99% but flags 48% of normal traffic, so it is not really working either. This is the biggest open problem in this field, and the honest headline of the project.
+Every model breaks on at least part of the new network. The shipped LightGBM catches only 1.7% of attacks because it misses all DDoS. That part is seed luck: retrained with four other seeds it catches ~99% of DDoS, about 71% of attacks overall. What fails in every run is DoS (~23% caught) and brute force (0%). The perceptron catches 99% but flags 48% of normal traffic, so it is not really working either. Read the "benign falsely flagged" bars with care: 75–98% of LightGBM's 2018 false alarms are inbound internet RDP/SMB traffic that the dataset labels benign by default (README, Label audit). This is the biggest open problem in this field, and the honest headline of the project.
 
 **Honest evaluation**: the checks we did before trusting any number.
 
@@ -167,7 +169,7 @@ Every model breaks on at least part of the new network. The shipped LightGBM cat
 
 ## Main results in five lines
 
-1. On the test week, LightGBM gets 98 macro-F1 with 0.03% false alarms; the MLP is close at 97.
+1. On the test week, LightGBM gets 98 macro-F1 with 0.03% false alarms (0.0035% once mislabelled scan probes are corrected); the MLP is close at 97.
 2. Simple linear models (perceptron, linear regression) are not enough for this problem.
 3. On a different network (2018), every model fails. This is the real limit of the approach.
 4. The most accurate model (LightGBM) is also the easiest to fool by slowing an attack down.

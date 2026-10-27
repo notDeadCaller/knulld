@@ -63,7 +63,8 @@ trained on benign traffic only for novelty detection.
 
 - **Dataset:** the *improved* CIC-IDS2017 release. The original has known labelling and
   feature-extraction errors. "Attempted" flows (attack tools that produced no attack
-  behaviour) are relabelled benign, as the dataset authors recommend.
+  behaviour) are relabelled benign, as the dataset authors recommend. The improved release (2023-04-27)
+  still labels ~2.2k scan probes as BENIGN; KNULLD trains and scores on the official labels (see Label audit).
 - **Hygiene:** exact duplicates and contradictory rows removed; IPs, ports and timestamps are
   never model inputs (shortcut features; Arp et al., *Dos and Don'ts of ML in Computer Security*).
 - **Split:** time-ordered per (day, label): first 60% train, next 20% validation, last 20% test.
@@ -93,7 +94,30 @@ trained on benign traffic only for novelty detection.
   A per-session or per-day split would be stricter.
 - Base rates: the 2017 test set is 16% attacks and the 2018 benign traffic is subsampled to 5%, both far more
   attack-heavy than a real network. False-alarm rates carry over; precision and F1 do not.
+- 2017 false alarms depend on 97 likely mislabelled test flows (see Label audit): LightGBM seeds report 10–89 false
+  alarms on official labels and 7–10 on corrected labels, with PortScan recall 0.948 → 0.940 (0.894 for two seeds).
+- 2018 false-alarm rates depend on label policy: 75–98% of LightGBM's 2018 false alarms are inbound internet
+  RDP/SMB traffic that the dataset labels BENIGN by default (see Label audit). Detection numbers are unaffected.
 - `Fwd/Bwd Init Win Bytes` and `Fwd Seg Size Min` are set by each host's OS and may act as testbed shortcuts (untested).
+
+## Label audit
+
+Reproduce with `python audit/mirror_audit.py <official 2017 labelling notebook>` (rules are read from
+[`CNS2022_Code`](https://github.com/GintsEngelen/CNS2022_Code)); results in `audit/`.
+
+- **CIC-IDS2017 (improved release).** Swapping source and destination in the five official scan-labelling rules
+  (Thursday Infiltration–Portscan rounds 1–3, Friday Portscan rounds 1–2) finds 2,228 BENIGN zero-payload flows,
+  victim → scanner, inside the scan windows, all carrying the mirrored nmap window signature (Fwd Init Win 0,
+  Bwd Init Win 1024 or 29200). None duplicates a labelled probe, and the same host pairs have no such flows outside
+  the windows. They look like scan probes whose flow direction was flipped. This is inferred from flow features, not
+  from packet captures, and it is a lower bound (the labelling code drops rows with infinite rates). It is a residual
+  instance of a known problem: Engelen et al. 2021 describe the direction risk, Lanvin et al. 2022 report this
+  Thursday scan, and [CNS2022_Code PR #3](https://github.com/GintsEngelen/CNS2022_Code/pull/3) proposes labelling both
+  directions. 79 of the shipped LightGBM's 89 test false alarms are these flows (0.031% → 0.0035% on corrected labels).
+- **CSE-CIC-IDS2018 (our three days).** No such reverse flows. But 27% of the benign rows in our 5% sample (191,969)
+  are inbound TCP 3389 (132,038) or 445 (59,931) from ~19k public IPs to internal hosts; the labelling code has no rule
+  for these ports, so they are BENIGN by default. 86% carry payload and their intent is not established, so this is a
+  label-policy observation, not an error claim, and the set was defined after inspecting false alarms.
 
 ## Data
 

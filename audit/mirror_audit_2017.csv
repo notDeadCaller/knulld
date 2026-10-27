@@ -1,0 +1,41 @@
+day,label,src,dst,fwd_flows,fwd_labelled_as_rule,rev_flows,rev_benign,rev_benign_zero_payload,rev_benign_with_payload,rev_benign_zero_payload_nmap_sig,rule_has_extra_filters
+tuesday,FTP-Patator,172.16.0.1,1 ip(s),3984,3972,19,19,0,19,0,True
+tuesday,FTP-Patator - Attempted,172.16.0.1,1 ip(s),3984,12,19,19,0,19,0,True
+tuesday,SSH-Patator,172.16.0.1,1 ip(s),2988,2961,0,0,0,0,0,True
+tuesday,SSH-Patator - Attempted,172.16.0.1,1 ip(s),2988,27,0,0,0,0,0,True
+wednesday,DoS Slowloris - Attempted,172.16.0.1,1 ip(s),138,138,0,0,0,0,0,True
+wednesday,DoS Slowloris,172.16.0.1,1 ip(s),5568,3859,0,0,0,0,0,True
+wednesday,DoS Slowloris - Attempted,172.16.0.1,1 ip(s),5568,1709,0,0,0,0,0,True
+wednesday,DoS Slowloris - Attempted,192.168.10.50,1 ip(s),0,0,5568,0,0,0,0,True
+wednesday,DoS Slowhttptest,172.16.0.1,1 ip(s),5109,1740,1,1,0,1,0,True
+wednesday,DoS Slowhttptest - Attempted,172.16.0.1,1 ip(s),5109,3368,1,1,0,1,0,True
+wednesday,DoS Hulk,172.16.0.1,1 ip(s),15107,15102,76,76,0,76,0,True
+wednesday,DoS Hulk - Attempted,172.16.0.1,1 ip(s),15107,5,76,76,0,76,0,True
+wednesday,DoS Hulk,172.16.0.1,1 ip(s),143942,143366,1,1,0,1,0,True
+wednesday,DoS Hulk - Attempted,172.16.0.1,1 ip(s),159049,581,77,77,0,77,0,True
+wednesday,DoS GoldenEye,172.16.0.1,1 ip(s),7647,7567,0,0,0,0,0,True
+wednesday,DoS GoldenEye - Attempted,172.16.0.1,1 ip(s),7647,80,0,0,0,0,0,True
+wednesday,Heartbleed,172.16.0.1,1 ip(s),11,11,0,0,0,0,0,True
+wednesday,Heartbleed - Attempted,172.16.0.1,1 ip(s),11,0,0,0,0,0,0,True
+thursday,Web Attack - Brute Force - Attempted,172.16.0.1,1 ip(s),7,7,0,0,0,0,0,True
+thursday,Web Attack - Brute Force,172.16.0.1,1 ip(s),1358,73,2,2,2,0,0,True
+thursday,Web Attack - Brute Force - Attempted,172.16.0.1,1 ip(s),1358,1285,2,2,2,0,0,True
+thursday,Web Attack - XSS,172.16.0.1,1 ip(s),673,18,0,0,0,0,0,True
+thursday,Web Attack - XSS - Attempted,172.16.0.1,1 ip(s),673,655,0,0,0,0,0,True
+thursday,Web Attack - SQL Injection - Attempted,172.16.0.1,1 ip(s),5,5,0,0,0,0,0,True
+thursday,Web Attack - SQL Injection,172.16.0.1,1 ip(s),13,13,0,0,0,0,0,True
+thursday,Infiltration,192.168.10.8,1 ip(s),48,32,0,0,0,0,0,False
+thursday,Infiltration - Attempted,192.168.10.8,1 ip(s),48,16,0,0,0,0,0,False
+thursday,Infiltration - Attempted,192.168.10.9,1 ip(s),3,3,0,0,0,0,0,False
+thursday,Infiltration,192.168.10.25,1 ip(s),30,4,0,0,0,0,0,False
+thursday,Infiltration - Attempted,192.168.10.25,1 ip(s),30,26,0,0,0,0,0,False
+thursday,Infiltration - Portscan,172.16.0.1,1 ip(s),955,955,41,41,41,0,41,True
+thursday,Infiltration - Portscan,192.168.10.8,1 ip(s),2019,2019,0,0,0,0,0,False
+thursday,Infiltration - Portscan,192.168.10.8,11 ip(s),68807,68793,1791,1791,1787,4,1559,True
+friday,Portscan,172.16.0.1,1 ip(s),344,344,1,1,1,0,0,False
+friday,Portscan,172.16.0.1,1 ip(s),158722,158722,643,643,642,1,628,False
+friday,Botnet,"192.168.10.15,192.168.10.9,192.168.10.14,192.168.10.5,192.168.10.8",1 ip(s),736,736,0,0,0,0,0,False
+friday,Botnet - Attempted,"192.168.10.15,192.168.10.9,192.168.10.14,192.168.10.5,192.168.10.8",1 ip(s),736,0,0,0,0,0,0,False
+friday,Botnet - Attempted,"192.168.10.15,192.168.10.9,192.168.10.14,192.168.10.5,192.168.10.8",1 ip(s),4067,4067,0,0,0,0,0,False
+friday,DDoS,172.16.0.1,1 ip(s),95144,95144,539,539,0,539,0,False
+friday,DDoS - Attempted,172.16.0.1,1 ip(s),95144,0,539,539,0,539,0,False

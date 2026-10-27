@@ -1,0 +1,14 @@
+day,label,src,dst,fwd_flows,fwd_labelled_as_rule,rev_flows,rev_benign,rev_benign_zero_payload,rev_benign_with_payload,rev_benign_zero_payload_nmap_sig,rule_has_extra_filters
+wednesday_14022018,FTP-BruteForce - Attempted,18.221.219.4,1 ip(s),193324,193324,0,0,0,0,0,False
+wednesday_14022018,FTP-BruteForce - Attempted,13.58.98.64,1 ip(s),30,30,0,0,0,0,0,True
+wednesday_14022018,SSH-BruteForce,13.58.98.64,1 ip(s),94197,94197,0,0,0,0,0,True
+wednesday_14022018,SSH-BruteForce - Attempted,13.58.98.64,1 ip(s),94197,0,0,0,0,0,0,True
+thursday_15022018,DoS GoldenEye,18.219.211.138,1 ip(s),26861,22560,0,0,0,0,0,True
+thursday_15022018,DoS GoldenEye - Attempted,18.219.211.138,1 ip(s),26861,4301,0,0,0,0,0,True
+thursday_15022018,DoS Slowloris,18.217.165.70,1 ip(s),10770,8490,0,0,0,0,0,False
+thursday_15022018,DoS Slowloris - Attempted,18.217.165.70,1 ip(s),10770,2280,0,0,0,0,0,False
+tuesday_20022018,DDoS-LOIC-HTTP,"18.218.115.60,18.219.9.1,18.219.32.43,18.218.55.126,52.14.136.135,18.219.5.43,18.216.200.189,18.218.229.235,18.218.11.51,18.216.24.42",1 ip(s),289328,289328,0,0,0,0,0,True
+tuesday_20022018,DDoS-LOIC-HTTP - Attempted,"18.218.115.60,18.219.9.1,18.219.32.43,18.218.55.126,52.14.136.135,18.219.5.43,18.216.200.189,18.218.229.235,18.218.11.51,18.216.24.42",1 ip(s),289328,0,0,0,0,0,0,True
+tuesday_20022018,DDoS-LOIC-UDP,"18.218.115.60,18.219.9.1,18.219.32.43,18.218.55.126,52.14.136.135,18.219.5.43,18.216.200.189,18.218.229.235,18.218.11.51,18.216.24.42",1 ip(s),797,797,80,0,0,0,0,True
+tuesday_20022018,DDoS-LOIC-UDP - Attempted,"18.218.115.60,18.219.9.1,18.219.32.43,18.218.55.126,52.14.136.135,18.219.5.43,18.216.200.189,18.218.229.235,18.218.11.51,18.216.24.42",1 ip(s),797,0,80,0,0,0,0,True
+tuesday_20022018,DDoS-LOIC-UDP - Attempted,172.31.69.25,10 ip(s),80,80,797,0,0,0,0,True
